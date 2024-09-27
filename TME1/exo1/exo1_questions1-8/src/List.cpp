@@ -1,23 +1,33 @@
 
+#include "List.h"
+//FAUTE : List.h n'était pas inclus
+
 namespace pr {
 
 // ******************* Chainon
 Chainon::Chainon (const std::string & data, Chainon * next):data(data),next(next) {};
 
 size_t Chainon::length() {
+	
+	Chainon * it = this;
+
 	size_t len = 1;
-	if (next != nullptr) {
-		len += next->length();
+	while (it->next) {
+		it = it->next;
+		len++;
 	}
-	return length();
+	return len;
 }
 
-void Chainon::print (std::ostream & os) {
+void Chainon::print (std::ostream & os) const {
 	os << data ;
 	if (next != nullptr) {
 		os << ", ";
-	}
-	next->print(os);
+		next->print(os);
+	}else{
+		os << "";
+	}//FAUTE pas de cas de base à la récursivité
+	
 }
 
 // ******************  List
@@ -45,7 +55,8 @@ void List::push_front (const std::string& val) {
 	tete = new Chainon(val,tete);
 }
 
-bool empty() {
+//FAUTE : il n'était pas précisé que la méthode empty était une méthode de la classe List
+bool List::empty() {
 	return tete == nullptr;
 }
 
@@ -57,9 +68,8 @@ size_t List::size() const {
 	}
 }
 
-} // namespace pr
-
-std::ostream & operator<< (std::ostream & os, const pr::List & vec)
+//FAUTE : la définition de la surchage de l'opérateur << était hors du namespace pr
+std::ostream & operator<< (std::ostream & os, const List & vec) 
 {
 	os << "[";
 	if (vec.tete != nullptr) {
@@ -68,4 +78,9 @@ std::ostream & operator<< (std::ostream & os, const pr::List & vec)
 	os << "]";
 	return os;
 }
+
+} // namespace pr
+
+
+
 

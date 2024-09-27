@@ -14,6 +14,7 @@ public :
 	Chainon (const std::string & data, Chainon * next=nullptr);
 	size_t length() ;
 	void print (std::ostream & os) const;
+	
 };
 
 class List {
@@ -35,17 +36,18 @@ public:
 
 	void push_back (const std::string& val) ;
 
-	void push_front (const std::string& val) {
-		tete = new Chainon(val,tete);
-	}
+	//FAUTE : la méthode push front avait son corps dans le .h	
+	void push_front (const std::string& val) ;
 
 	bool empty() ;
 
 	size_t size() const ;
+
+	//FAUTE : le prototype de la surcharge de l'opérateur << était hors de la classe 
+	friend std::ostream & operator<< (std::ostream & os, const List & vec) ;
 };
 
 
-std::ostream & operator<< (std::ostream & os, const List & vec) ;
 
 } /* namespace pr */
 
