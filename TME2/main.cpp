@@ -136,8 +136,8 @@ int main () {
 	//question 7 : 
 	vector <question5::Entry<string,int>> vec_occurrence ;
 
-	for(auto forward_list = table_words.kvp_buckets.begin(); 
-			 forward_list != table_words.kvp_buckets.end();
+	for(auto forward_list = table_words.begin(); 
+			 forward_list != table_words.end();
 	 		 forward_list++){
 		vec_occurrence.insert(vec_occurrence.end(),
 									forward_list->begin(),

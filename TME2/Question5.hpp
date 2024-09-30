@@ -8,7 +8,7 @@ namespace question5 {
 
 template <typename  K, typename V>
 class Entry { 
-    public : 
+ 
     K key;
     V value;
 
@@ -22,6 +22,9 @@ class Entry {
     V getValue() const {
         return value;
     }
+    
+    template <typename  L, typename M>
+    friend class HashTable;
 };
 
 template <typename  K, typename V>
@@ -71,6 +74,14 @@ class HashTable {
     size_t getSize() const {
         return size;
     }
+
+    auto begin() {
+        return kvp_buckets.begin();
+    }
+    auto end() {
+        return kvp_buckets.end();
+    }
+
 };
 
 } // namespace question5
