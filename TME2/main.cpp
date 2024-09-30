@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <iterator>
 #include <regex>
 #include <chrono>
 #include <vector>
@@ -64,7 +65,7 @@ int main () {
 	//vector<pair<string,int>> vec_words = std::vector<pair<string,int>>();
 
 	//question 6 : 
-	question5::HashTable<string, int> vec_words(1000);
+	question5::HashTable<string, int> table_words(1000);
 
 	size_t nombre_lu = 0;
 	// prochain mot lu
@@ -88,13 +89,13 @@ int main () {
 		//question 3 : 
 		//append_new_word_pair(vec_words, word);
 
-		//question 5 :
+		//question 6 :
 	
-		if(vec_words.put(word, 1))
+		if(table_words.put(word, 1))
 		{
-			int* count = vec_words.get(word);
+			int* count = table_words.get(word);
 			(*count)++;
-			vec_words.put(word, *count);
+			table_words.put(word, *count);
 		}
 	}
 	input.close();
@@ -116,21 +117,42 @@ int main () {
 	cout << "Found a total of " << getCount(vec_words, "toto") << " occurences of the word 'toto'." << endl;
 	*/
 
-	//question 5 :
+	//question 6 :
 
-	int* count = vec_words.get("war");
+	int* count = table_words.get("war");
 
 	if(count)
 		cout << "Found a total of " << *count << " occurences of the word 'war'." << endl;
-	count = vec_words.get("peace");
+	count = table_words.get("peace");
 	if(count)
 		cout << "Found a total of " << *count << " occurences of the word 'peace'." << endl;
 	
-	count = vec_words.get("toto");
+	count = table_words.get("toto");
 	if(count)
 		cout << "Found a total of " << *count << " occurences of the word 'toto'." << endl;
 	else
 		cout << "Word 'toto' not found." << endl;
+
+	//question 7 : 
+	vector <question5::Entry<string,int>> vec_occurrence ;
+
+	for(auto forward_list = table_words.kvp_buckets.begin(); 
+			 forward_list != table_words.kvp_buckets.end();
+	 		 forward_list++){
+		vec_occurrence.insert(vec_occurrence.end(),
+									forward_list->begin(),
+									forward_list->end());
+	}
+	//question 8 :
+	sort(vec_occurrence.begin(),
+		 vec_occurrence.end(),
+		 [](const question5::Entry<string,int>& a, const question5::Entry<string,int>& b){ return a.getValue() > b.getValue();}
+		);
+
+	for(int i = 0 ; i < 10 ; i++){
+		cout << vec_occurrence[i].getKey() << " : " << vec_occurrence[i].getValue() << endl;
+	}	
+
     return 0;
 }
 

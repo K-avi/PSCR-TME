@@ -8,7 +8,7 @@ namespace question5 {
 
 template <typename  K, typename V>
 class Entry { 
-    public :
+    public : 
     K key;
     V value;
 
@@ -19,7 +19,7 @@ class Entry {
         return key;
     }
 
-    V getValue() {
+    V getValue() const {
         return value;
     }
 };
@@ -27,7 +27,7 @@ class Entry {
 template <typename  K, typename V>
 class HashTable {
 
-
+    public:
     std::vector<std::forward_list<Entry<K,V>>> kvp_buckets; 
     size_t size;
 
