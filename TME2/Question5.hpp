@@ -22,6 +22,14 @@ class Entry {
     V getValue() const {
         return value;
     }
+
+    K& operator*(){
+        return key;
+    } 
+
+    bool operator==(const Entry<K,V>& other) const{
+        return key == other.key && value == other.value;
+    }
     
     template <typename  L, typename M>
     friend class HashTable;

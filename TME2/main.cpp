@@ -7,6 +7,7 @@
 #include <utility>
 
 #include "Question5.hpp"
+#include "tme3.hpp"
 
 using namespace std;
 
@@ -152,6 +153,14 @@ int main () {
 	for(int i = 0 ; i < 10 ; i++){
 		cout << vec_occurrence[i].getKey() << " : " << vec_occurrence[i].getValue() << endl;
 	}	
+
+	//TME 3 : Question 3 
+
+	question5::Entry<string , int> entree_0(vec_occurrence[0].getKey(), vec_occurrence[0].getValue());
+
+	cout << "invocation de count : " << tme3::count(vec_occurrence.begin(), vec_occurrence.end()) << endl; 
+	cout << "la taille de vec_occurence est : " << vec_occurrence.size() << endl ; 
+	cout << "invocation de count equal pour \"this\" : " << tme3::count_if_equal(vec_occurrence.begin(), vec_occurrence.end(),entree_0) << endl; 
 
     return 0;
 }
