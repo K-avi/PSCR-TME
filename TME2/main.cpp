@@ -66,7 +66,7 @@ int main () {
 	//vector<pair<string,int>> vec_words = std::vector<pair<string,int>>();
 
 	//question 6 : 
-	question5::HashTable<string, int> table_words(1000);
+	question5::HashTable<string, int> table_words(30000);
 
 	size_t nombre_lu = 0;
 	// prochain mot lu
@@ -135,15 +135,21 @@ int main () {
 		cout << "Word 'toto' not found." << endl;
 
 	//question 7 : 
+	
 	vector <question5::Entry<string,int>> vec_occurrence ;
-
+	/*
 	for(auto forward_list = table_words.begin(); 
 			 forward_list != table_words.end();
 	 		 forward_list++){
 		vec_occurrence.insert(vec_occurrence.end(),
 									forward_list->begin(),
 									forward_list->end());
+	}*/
+
+	for(auto& it = table_words.begin(); it != table_words.end(); ++it ){
+		vec_occurrence.push_back(*it);
 	}
+/*
 	//question 8 :
 	sort(vec_occurrence.begin(),
 		 vec_occurrence.end(),
@@ -161,7 +167,7 @@ int main () {
 	cout << "invocation de count : " << tme3::count(vec_occurrence.begin(), vec_occurrence.end()) << endl; 
 	cout << "la taille de vec_occurence est : " << vec_occurrence.size() << endl ; 
 	cout << "invocation de count equal pour \"this\" : " << tme3::count_if_equal(vec_occurrence.begin(), vec_occurrence.end(),entree_0) << endl; 
-
+*/
     return 0;
 }
 

@@ -15,17 +15,10 @@ class Entry {
     public:
     Entry(K key, V value) : key(key), value(value) {}
 
-    K getKey() const {
-        return key;
-    }
+    K getKey() const {return key;}
+    V getValue() const {return value;}
 
-    V getValue() const {
-        return value;
-    }
-
-    K& operator*(){
-        return key;
-    } 
+    K& operator*(){return key;} 
 
     bool operator==(const Entry<K,V>& other) const{
         return key == other.key && value == other.value;
@@ -66,7 +59,6 @@ class HashTable {
     
     bool put(const K& key, V value){
         size_t hash = std::hash<K>{}(key) % size;
-
         std::forward_list<Entry<K,V>> & bucket = kvp_buckets[hash];
 
         for(auto & [k, v] : bucket){
@@ -74,20 +66,60 @@ class HashTable {
                 return true;
             }
         }
-
         bucket.push_front(Entry(key, value));
         return false;
     }
 
-    size_t getSize() const {
-        return size;
-    }
+    size_t getSize() const {return size;}
 
-    auto begin() {
-        return kvp_buckets.begin();
+    class iterator{
+
+        typename std::vector<std::forward_list<Entry<K,V>>>::iterator buckets_end ;
+
+        typename std::vector<std::forward_list<Entry<K,V>>>::iterator buckets_it;
+        typename std::forward_list<Entry<K,V>>::iterator list_it;
+
+        public: 
+
+        iterator(std::vector<std::forward_list<Entry<K,V>>>& buckets_ref){
+            buckets_end = buckets_ref.end();
+            buckets_it = buckets_ref.begin();
+            list_it = (*buckets_it).begin();
+        }
+        
+        iterator(std::vector<std::forward_list<Entry<K,V>>>& buckets_ref,
+                 typename std::vector<std::forward_list<Entry<K,V>>>::iterator buckets_it  ){
+            buckets_end = buckets_ref.end();
+            this->buckets_it = buckets_it;
+            list_it = (*(this->buckets_it)).begin();
+        }
+
+    
+        iterator& operator++(){
+            //increment the iterator in list
+            //if end; go to next bucket
+            if(++buckets_it == buckets_end){return *this;}
+            if(++list_it == (*buckets_it).end() ){
+                list_it = (*buckets_it).begin();
+            }
+            return *this ;
+        }
+        
+        Entry<K, V>& operator*(){
+            return *list_it;
+        }
+        
+        bool operator!=(const iterator& other){
+            return !(buckets_it == other.buckets_it 
+                   && list_it == other.list_it) ;
+        }
+    };
+
+    iterator& begin() {
+        return *(new iterator(kvp_buckets));
     }
-    auto end() {
-        return kvp_buckets.end();
+    iterator& end() {
+        return *(new iterator(kvp_buckets, kvp_buckets.end()));
     }
 
 };
