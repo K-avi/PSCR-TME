@@ -113,16 +113,20 @@ class HashTable {
             return !( buckets_it == other.buckets_it && list_it == other.list_it);
         }
 
-        Entry<K,V>& operator*(){
+        Entry<K,V> operator*(){
+           
+            if(buckets_it == buckets_end || list_it == (buckets_it - 1)->end()){
+               return Entry<K,V>(K(), V());
+            }
             return *list_it;
         }     
     };
 
-    iterator& begin() {
-        return *(new iterator(kvp_buckets));
+    iterator begin() {
+        return iterator(kvp_buckets);
     }
-    iterator& end() {
-        return *(new iterator(kvp_buckets, kvp_buckets.size()));
+    iterator end() {
+        return iterator(kvp_buckets, size);
     }
 
 };

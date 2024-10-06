@@ -10,16 +10,13 @@ int main(){
             table_words.put(to_string(i), i);
         }
 
-       // vector <question5::Entry<string,int>> vec_occurrence ;
+        vector <question5::Entry<string,int>> vec_occurrence ;
 
-        for(auto& it = table_words.begin();  it != table_words.end() ; ++it ){
-		   // vec_occurrence.push_back(*it);
-         //  cout << tmp++ << endl;
+        for(auto it = table_words.begin();  it != table_words.end() ; ++it ){
+		    vec_occurrence.push_back(*it);
+           //cout << tmp++ << endl;
 	    //}
         }
-
-
-
 
         return 0 ;
 }
