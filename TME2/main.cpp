@@ -146,11 +146,12 @@ int main () {
 									forward_list->end());
 	}*/
 
-	for(auto& it = table_words.begin(); it != table_words.end(); ++it ){
+	//TME 3 : Question 5
+	for(auto it = table_words.begin(); it != table_words.end(); ++it ){
 		vec_occurrence.push_back(*it);
 	}
-/*
-	//question 8 :
+
+	//TME 2 question 8  / TME 3 Question 6
 	sort(vec_occurrence.begin(),
 		 vec_occurrence.end(),
 		 [](const question5::Entry<string,int>& a, const question5::Entry<string,int>& b){ return a.getValue() > b.getValue();}
@@ -167,7 +168,7 @@ int main () {
 	cout << "invocation de count : " << tme3::count(vec_occurrence.begin(), vec_occurrence.end()) << endl; 
 	cout << "la taille de vec_occurence est : " << vec_occurrence.size() << endl ; 
 	cout << "invocation de count equal pour \"this\" : " << tme3::count_if_equal(vec_occurrence.begin(), vec_occurrence.end(),entree_0) << endl; 
-*/
+
     return 0;
 }
 
