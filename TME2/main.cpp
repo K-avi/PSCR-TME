@@ -145,12 +145,12 @@ int main () {
 	}
 	//question 8 :
 	sort(vec_occurrence.begin(),
-		 vec_occurrence.end(),
-		 [](const question5::Entry<string,int>& a, const question5::Entry<string,int>& b){ return a.getValue() > b.getValue();}
-		);
-
+		 vec_occurrence.end());
+		// [](const question5::Entry<string,int>& a, const question5::Entry<string,int>& b){ return a.getValue() > b.getValue();}
+		//
 	for(int i = 0 ; i < 10 ; i++){
-		cout << vec_occurrence[i].getKey() << " : " << vec_occurrence[i].getValue() << endl;
+		cout << "i="<< i << endl;
+		//cout << " " << vec_occurrence[i].getKey() << endl; //.getKey() << " : " << vec_occurrence[i].getValue() << endl;
 	}	
 
     return 0;
