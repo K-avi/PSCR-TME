@@ -1,12 +1,15 @@
+#include <forward_list>
 #include <iostream>
 #include <fstream>
 #include <iterator>
 #include <regex>
 #include <chrono>
+#include <unordered_map>
 #include <vector>
 #include <utility>
 
 #include "Question5.hpp"
+#include "tme3.hpp"
 
 using namespace std;
 
@@ -58,14 +61,17 @@ int main () {
 	auto start = steady_clock::now();
 	cout << "Parsing War and Peace" << endl;
 
-	//question 2 :
+	//TME 2 : question 2 :
 	//vector<string> vec_words = std::vector<string>(); 
 
-	//question 3 : 
+	//TME 2 : question 3 : 
 	//vector<pair<string,int>> vec_words = std::vector<pair<string,int>>();
 
-	//question 6 : 
-	question5::HashTable<string, int> table_words(1000);
+	//TME 2 : question 6 : 
+	//question5::HashTable<string, int> table_words(30000);
+
+	//TME 3 : question 7 :
+	unordered_map<string, int> table_words;
 
 	size_t nombre_lu = 0;
 	// prochain mot lu
@@ -83,20 +89,21 @@ int main () {
 			// on affiche un mot "propre" sur 100
 			cout << nombre_lu << ": "<< word << endl;
 		nombre_lu++;
-		//question 2 : 
+		//TME 2 : question 2 : 
 		//append_new_word(vec_words, word);
 
-		//question 3 : 
+		//TME 2 : question 3 : 
 		//append_new_word_pair(vec_words, word);
 
-		//question 6 :
-	
+		//TME 2 question 6 :
+		/*
 		if(table_words.put(word, 1))
 		{
 			int* count = table_words.get(word);
 			(*count)++;
 			table_words.put(word, *count);
-		}
+		}*/
+		table_words[word]++;
 	}
 	input.close();
 
@@ -109,7 +116,7 @@ int main () {
 
     cout << "Found a total of " << nombre_lu << " words." << endl;
 	
-	//question 3 :
+	//TME 2 : question 3 :
 	/*
 	cout << "Found a total of " << vec_words.size() << " different words." << endl;
 	cout << "Found a total of " << getCount(vec_words, "war") << " occurences of the word 'war'." << endl;
@@ -117,8 +124,8 @@ int main () {
 	cout << "Found a total of " << getCount(vec_words, "toto") << " occurences of the word 'toto'." << endl;
 	*/
 
-	//question 6 :
-
+	//TME 2 : question 6 :
+	/*
 	int* count = table_words.get("war");
 
 	if(count)
@@ -132,10 +139,12 @@ int main () {
 		cout << "Found a total of " << *count << " occurences of the word 'toto'." << endl;
 	else
 		cout << "Word 'toto' not found." << endl;
+	*/
 
-	//question 7 : 
+	//TME 2 :question 7 : 
+	
 	vector <question5::Entry<string,int>> vec_occurrence ;
-
+	/*
 	for(auto forward_list = table_words.begin(); 
 			 forward_list != table_words.end();
 	 		 forward_list++){
@@ -143,15 +152,40 @@ int main () {
 									forward_list->begin(),
 									forward_list->end());
 	}
-	//question 8 :
+	*/
+
+	//TME 3 : Question 5
+	
+	for(auto it = table_words.begin(); it != table_words.end(); ++it ){
+		question5::Entry<string, int> entry(it->first, it->second);
+		vec_occurrence.push_back(entry);
+	}
+	
+	//TME 2 question 8  / TME 3 Question 6
 	sort(vec_occurrence.begin(),
-		 vec_occurrence.end());
-		// [](const question5::Entry<string,int>& a, const question5::Entry<string,int>& b){ return a.getValue() > b.getValue();}
-		//
+		 vec_occurrence.end(),
+		 [](const question5::Entry<string,int>& a, const question5::Entry<string,int>& b){ return a.getValue() > b.getValue();}
+		);
+
 	for(int i = 0 ; i < 10 ; i++){
-		cout << "i="<< i << endl;
-		//cout << " " << vec_occurrence[i].getKey() << endl; //.getKey() << " : " << vec_occurrence[i].getValue() << endl;
+		cout << vec_occurrence[i].getKey() << " : " << vec_occurrence[i].getValue() << endl;
 	}	
+
+	//TME 3 : Question 3 
+
+	question5::Entry<string , int> entree_0(vec_occurrence[0].getKey(), vec_occurrence[0].getValue());
+
+	cout << "invocation de count : " << tme3::count(vec_occurrence.begin(), vec_occurrence.end()) << endl; 
+	cout << "la taille de vec_occurence est : " << vec_occurrence.size() << endl ; 
+	cout << "invocation de count equal pour \"this\" : " << tme3::count_if_equal(vec_occurrence.begin(), vec_occurrence.end(),entree_0) << endl; 
+
+	//TME 3 : Question 8 :
+
+	unordered_map<int, forward_list<string>> map_inversee ;
+
+	for(auto it =  table_words.begin();  it != table_words.end(); ++it){
+		map_inversee[it->second].push_front(it->first);
+	}
 
     return 0;
 }

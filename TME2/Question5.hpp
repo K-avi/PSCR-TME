@@ -15,12 +15,13 @@ class Entry {
     public:
     Entry(K key, V value) : key(key), value(value) {}
 
-    K getKey() const {
-        return key;
-    }
+    K getKey() const {return key;}
+    V getValue() const {return value;}
 
-    V getValue() const {
-        return value;
+    K& operator*(){return key;} 
+
+    bool operator==(const Entry<K,V>& other) const{
+        return key == other.key && value == other.value;
     }
     
     template <typename  L, typename M>
@@ -58,7 +59,6 @@ class HashTable {
     
     bool put(const K& key, V value){
         size_t hash = std::hash<K>{}(key) % size;
-
         std::forward_list<Entry<K,V>> & bucket = kvp_buckets[hash];
 
         for(auto & [k, v] : bucket){
@@ -66,20 +66,67 @@ class HashTable {
                 return true;
             }
         }
-
         bucket.push_front(Entry(key, value));
         return false;
     }
 
-    size_t getSize() const {
-        return size;
-    }
+    size_t getSize() const {return size;}
 
-    auto begin() {
-        return kvp_buckets.begin();
+    class iterator{
+        
+        //iterateur positionne sur la fin du vecteur de buckets
+        typename std::vector<std::forward_list<Entry<K,V>>>::iterator buckets_end ;
+        //iterateur positionne sur le bucket courant
+        typename std::vector<std::forward_list<Entry<K,V>>>::iterator buckets_it ;
+        //iterateur positionne sur l'element courant de la liste chainee du bucket courant
+        typename std::forward_list<Entry<K,V>>::iterator list_it;
+
+        public: 
+
+        iterator(std::vector<std::forward_list<Entry<K,V>>> & buckets, size_t index = 0) : buckets_end(buckets.end()){
+            buckets_it = buckets.begin() + index;
+
+            if(buckets_it != buckets_end){
+                list_it = (*buckets_it).begin();
+            }else{
+               list_it = (buckets_it - 1)->end();
+            }   
+        }
+
+        iterator& operator++(){
+            if(buckets_it == buckets_end){
+                return *this;
+            }
+            if(list_it != (*buckets_it).end()){
+                ++list_it;
+            }else if(buckets_it != buckets_end){
+                ++buckets_it;
+                if(buckets_it != buckets_end){
+                    list_it = (*buckets_it).begin();
+                }
+            }
+            return *this;
+        }
+
+        bool operator!=(const iterator& other) const{
+
+            return !( buckets_it == other.buckets_it && list_it == other.list_it);
+        }
+
+        Entry<K,V> operator*(){
+           
+            if(buckets_it == buckets_end || list_it == (buckets_it - 1)->end()){
+               return Entry<K,V>(K(), V());
+            }
+            return *list_it;
+        }     
+    };
+
+    iterator begin() {
+        return iterator(kvp_buckets);
     }
-    auto end() {
-        return kvp_buckets.end();
+    iterator end() {
+        return iterator(kvp_buckets, size);
     }
 
 };
