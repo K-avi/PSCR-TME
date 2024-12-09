@@ -9,6 +9,14 @@
 #define DEFAULT_SERVER_NAME "semserver"
 #define DEFAULT_CLIENT_NAME "semclient"
 
+bool finished = 0 ; 
+
+void signal_handler(int sig){
+    if(sig == SIGINT){
+        finished = true;
+    }
+}
+
 
 int server_send(char* server_name, struct message *m){
 
@@ -68,7 +76,7 @@ void* client_read(void* arg){
     init_myshm(client_shm);
    
 
-    while(true){
+    while(!finished){
 
         sem_wait(&client_shm->sem_read);
 
@@ -106,7 +114,7 @@ int client_write(void* arg){
     memcpy(m.content, client_name, strlen(client_name));
     server_send(server_name, &m);
     
-    while(true){
+    while(!finished){
         struct message m;
         m.type = T_BROADCAST;
         fgets(m.content, TAILLE_MESS, stdin);
@@ -115,6 +123,8 @@ int client_write(void* arg){
 
     memcpy(m.content, client_name, strlen(client_name));
     server_send(server_name, &m);
+
+    return 0;
 }
 
 
@@ -130,6 +140,16 @@ int main(int argc, char** argv){
         client_name = strdup(argv[1]); //to avoid invalid free
         server_name = argv[2];
     }
+
+    //setup signal handler
+    struct sigaction sa;
+    sa.sa_handler = signal_handler;
+    sigset_t mask;
+    sigemptyset(&mask);
+    sa.sa_mask = mask;
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
+
 
     pthread_t read_thread;
     pthread_t write_thread;
