@@ -38,13 +38,18 @@ struct myshm {
   int read; /* nombre de messages retransmis par le serveur */
   int write; /* nombre de messages non encore retransmis par le serveur */
   int nb; /* nombre total de messages emis */
-  sem_t sem;
+  sem_t sem_read;
+  sem_t sem_write;
+
+
+  int idx;
   struct message messages[MAX_MESS];
 };
 
 char *getName(char *name);
 
 struct server;
-extern int send_message(struct message* client_message); //server connexion API
+extern int server_send(char* server_name, struct message *m);
+
 
 #endif

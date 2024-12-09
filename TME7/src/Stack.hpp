@@ -56,7 +56,6 @@ public :
 	void push(T elt) {
 		//P(sem_write)
 		sem_wait(&sem_write);
-		std::cout << "pushing " << elt << std::endl;
 		tab[sz++] = elt;
 		//V(sem_read)
 		sem_post(&sem_read);
