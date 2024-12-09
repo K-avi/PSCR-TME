@@ -27,6 +27,8 @@
 #define MAX_USERS 10
 #define TAILLE_MESS 10
 
+enum {T_CONNEXION, T_BROADCAST, T_DISCONNECT};
+
 struct message {
   long type;
   char content[TAILLE_MESS];
@@ -41,5 +43,8 @@ struct myshm {
 };
 
 char *getName(char *name);
+
+struct server;
+extern int send_message(struct message* client_message); //server connexion API
 
 #endif
