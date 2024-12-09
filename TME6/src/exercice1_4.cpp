@@ -31,8 +31,6 @@ int wait_til_pid_signalless(pid_t pid, int sec){
 }
 //question 8 correcte :  
 
-
-
 pid_t global_ret = 0 ; 
 pid_t global_arg = 0 ; 
 
@@ -46,7 +44,6 @@ void disarm_alarm(int signal){
 
 int wait_til_pid(pid_t pid, int sec){
     
-
     global_arg = pid ; 
 
     struct sigaction action = {} ; 
@@ -58,7 +55,6 @@ int wait_til_pid(pid_t pid, int sec){
     sigaction(SIGCHLD, &action ,nullptr);
 
     alarm(sec);
-
 
     sigset_t new_mask; 
     sigaddset(&new_mask, SIGCHLD);

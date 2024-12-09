@@ -25,7 +25,6 @@ int main () {
 
 					cout << " apres 2e fork je suis pid=" << getpid() << "mon pere est ppid=" << getppid() << endl ;  
 
-
 					nb_fils = 0 ;
 
 					j=0;

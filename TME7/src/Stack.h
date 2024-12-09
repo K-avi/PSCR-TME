@@ -8,10 +8,11 @@ namespace pr {
 
 template<typename T>
 class Stack {
-	T tab [STACKSIZE];
+	T* tab [STACKSIZE];
 	size_t sz;
 public :
 	Stack () : sz(0) { memset(tab,0,sizeof tab) ;}
+
 
 	T pop () {
 		// bloquer si vide

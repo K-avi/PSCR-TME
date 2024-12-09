@@ -1,5 +1,6 @@
 #include "Stack.h"
 #include <iostream>
+#include <sys/mman.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <vector>
@@ -23,7 +24,10 @@ void consomateur (Stack<char> * stack) {
 }
 
 int main () {
-	Stack<char> * s = new Stack<char>();
+
+	void* mem = mmap(0, sizeof(Stack<char>), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+	Stack<char> * s = new (mem) Stack<char>();
+
 
 	pid_t pp = fork();
 	if (pp==0) {
@@ -40,7 +44,9 @@ int main () {
 	wait(0);
 	wait(0);
 
-	delete s;
+	//delete s;
+	s->~Stack();
+	munmap(mem, sizeof(Stack<char>));
 	return 0;
 }
 
