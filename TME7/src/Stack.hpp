@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstring> // size_t,memset
 #include <fcntl.h>
+#include <iostream>
 #include <semaphore.h>
 
 namespace pr {
@@ -13,7 +14,7 @@ namespace pr {
 
 template<typename T>
 class Stack {
-	T* tab [STACKSIZE];
+	T tab [STACKSIZE];
 	size_t sz;
 	bool finished;
 	//declaration de semaphores; qui vont etre utilises comme des semaphores anonymes.
@@ -45,7 +46,7 @@ public :
 		// P(sem_read)
 		sem_wait(&sem_read);
 		
-		T toret = *tab[--sz];
+		T toret = tab[--sz];
 
 		//V(sem_write)
 		sem_post(&sem_write);
@@ -55,8 +56,8 @@ public :
 	void push(T elt) {
 		//P(sem_write)
 		sem_wait(&sem_write);
-		
-		tab[sz++] = new T(elt);
+		std::cout << "pushing " << elt << std::endl;
+		tab[sz++] = elt;
 		//V(sem_read)
 		sem_post(&sem_read);
 	}
