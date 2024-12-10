@@ -2,8 +2,8 @@
 #define SRC_TCPSERVER_H_
 
 #include <thread>
-#include "ServerSocket.h"
-#include "ConnectionHandler.h"
+#include "ServerSocket.hpp"
+#include "ConnectionHandler.hpp"
 
 namespace pr {
 

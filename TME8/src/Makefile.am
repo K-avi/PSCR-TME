@@ -13,11 +13,11 @@ AM_LDFLAGS = -pthread
 # version locale a une cible
 #cible_LDFLAGS = -pthread 
 
-server_SOURCES = ServerSocket.h ServerSocket.cpp Socket.h Socket.cpp server.cpp
+server_SOURCES = ServerSocket.hpp ServerSocket.cpp Socket.h Socket.cpp server.cpp
 
-client_SOURCES = Socket.h Socket.cpp client.cpp
+client_SOURCES = Socket.hpp Socket.cpp client.cpp
  
-server2_SOURCES = TCPServer.h TCPServer.cpp ServerSocket.h ServerSocket.cpp Socket.h Socket.cpp server2.cpp
+server2_SOURCES = TCPServer.hpp TCPServer.cpp ServerSocket.hpp ServerSocket.cpp Socket.hpp Socket.cpp server2.cpp
 
 
 

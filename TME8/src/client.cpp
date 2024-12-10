@@ -1,8 +1,10 @@
-#include "ServerSocket.h"
+#include "ServerSocket.hpp"
 #include <iostream>
 #include <unistd.h>
+#include <signal.h>
 #include <string>
 
+using namespace std;
 
 int main00() {
 	pr::Socket sock;
@@ -24,6 +26,7 @@ int main0() {
 
 	if (sock.isOpen()) {
 		int fd = sock.getFD();
+		cout << "file descriptor = " << fd << endl;
 		int i = 10;
 		ssize_t msz = sizeof(int);
 		if (write(fd, &i, msz) < msz) {
@@ -46,13 +49,17 @@ int main0() {
 
 // avec une boucle, on attend un 0
 int main() {
+	signal(SIGPIPE, SIG_IGN);
 
 	pr::Socket sock;
 
 	sock.connect("localhost", 1664);
 
+	cout << "connexion établie" << endl;
+
 	if (sock.isOpen()) {
 		int fd = sock.getFD();
+		cout << "file descriptor = " << fd << endl;
 
 		ssize_t msz = sizeof(int);
 		for (int i = 10; i >= 0; i--) {

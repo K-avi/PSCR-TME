@@ -1,7 +1,7 @@
 #ifndef SRC_CONNECTIONHANDLER_H_
 #define SRC_CONNECTIONHANDLER_H_
 
-#include "Socket.h"
+#include "Socket.hpp"
 
 namespace pr {
 

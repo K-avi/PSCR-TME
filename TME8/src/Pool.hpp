@@ -1,8 +1,8 @@
 #ifndef SRC_POOL_H_
 #define SRC_POOL_H_
 
-#include "Queue.h"
-#include "Job.h"
+#include "Queue.hpp"
+#include "Job.hpp"
 #include <vector>
 #include <thread>
 
