@@ -9,6 +9,8 @@ using namespace std;
 void pr::FTPHandlerServer::handleConnection(Socket s) {
     //read the command from the client on the socket
     
+    cout << "server handler started" << endl;
+
     char buff[256];
     int socketfd = s.getFD();
     DIR *dir;
@@ -19,6 +21,8 @@ void pr::FTPHandlerServer::handleConnection(Socket s) {
     }
 
     while (true) {
+        
+        cout << "Waiting for command" << endl;
         read(socketfd, buff,255);
         cout << "Received command : " << buff << endl;
 
@@ -99,15 +103,20 @@ void pr::FTPHandlerServer::handleConnection(Socket s) {
     close(socketfd);
     //close the directory 
     closedir(dir);
+
+    cout << "server handler ended" << endl;
 }
 
 void pr::FTPHandlerClient::handleConnection(Socket s){
     char buff[256];
     int socketfd = s.getFD();
     
+    cout << "client handler started" << endl;
+
     while(fgets(buff, 255, stdin)){
 
         if(!strncmp(buff, "LIST", 4)){
+            cout << "LIST command entered " << endl;
             //write the command to the server
             write(socketfd, buff, 255);
             //get the length of the list

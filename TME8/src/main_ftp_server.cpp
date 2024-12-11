@@ -30,6 +30,9 @@ int main(int argc, char** argv){
     server.startServer(socket_num);
 
     cout << "Server started on port " << socket_num << endl;
+    std::string s ;
+	std::cin >> s ;
     
+    server.stopServer();
     return 0 ;
 }

@@ -23,6 +23,7 @@ int main(int argc, char** argv){
         pr::Socket s;
         s.connect(server_ip, socket_num);
 
+        cout << "Connected to server" << endl;
 
         pr::FTPHandlerClient handler;
         handler.handleConnection(s);    
