@@ -6,10 +6,11 @@
 namespace pr {
     ServerSocket::ServerSocket(int port){
         int fd = socket(AF_INET, SOCK_STREAM, 0);
-        if(socketfd < 0){
+        if(fd < 0){
             perror("socket");
             return;
         }
+        socketfd = fd ;//if socket was created succesfully, set Server fd to newly opened fd
 
         //declare the port and adress and so on
         struct sockaddr_in sin;
@@ -32,7 +33,6 @@ namespace pr {
             return;
         }
 
-        socketfd = fd ;
     }
 
     Socket ServerSocket::accept(){

@@ -1,5 +1,6 @@
 #include "TCPServer.hpp"
 #include "ConnectionHandler.hpp"
+#include "JobHandler.hpp"
 #include "ServerSocket.hpp"
 #include <sys/select.h>
 #include <unistd.h>
@@ -8,6 +9,7 @@
 using namespace std;
 
 namespace pr {
+
     bool TCPServer::startServer(int port){
         if(!waitingThread){
             ss = new ServerSocket(port);
@@ -18,7 +20,7 @@ namespace pr {
                     return false;
                 }
                 
-                waitingThread = new std::thread([](TCPServer* s, int readpipe){
+                waitingThread = new std::thread([this](TCPServer* s, int readpipe){
                     while(true){
 
                         //rfds is the set that will be used to wait for events
@@ -40,16 +42,13 @@ namespace pr {
                         //if we reach this point, it means there was a connection on the server socket
                         Socket scom = s->ss->accept();
                         if(scom.isOpen()){
-                           //delegate the connection to the handler
-                           ConnectionHandler* copy = s->handler->clone();
-                            if(copy){
-                                 copy->handleConnection(scom);
-                            } 
-                            delete copy;
+                           //add connection thread to pool and handler
+                           threadPool.addJob(new JobHandler(handler,scom));
+
                         }
                     }
                 },this,pipefd[0]);
-                killpipe = pipefd[1];
+                killpipe = pipefd[1];//set killpipe to write end of the pipe
                 return true;
             }
 
@@ -72,6 +71,8 @@ namespace pr {
             //close the pipe
             close(killpipe);
             killpipe = -1;
+            //terminate the pool
+            threadPool.stop();
         }
     }
 };

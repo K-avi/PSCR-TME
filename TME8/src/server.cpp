@@ -2,6 +2,7 @@
 #include <iostream>
 #include <unistd.h>
 
+using namespace std ;
 int main00() {
 	pr::ServerSocket ss(1664);
 
@@ -28,6 +29,11 @@ int main() {
 		pr::Socket sc = ss.accept();
 
 		int fd = sc.getFD();
+		if(fd == -1){
+			perror("bad fd"); 
+			return 1;
+		}
+		cout << "fd is : " << fd << endl;
 
 		ssize_t msz = sizeof(int);
 		while (1) {

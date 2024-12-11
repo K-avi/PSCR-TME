@@ -6,6 +6,7 @@
 #include "ServerSocket.hpp"
 #include "ConnectionHandler.hpp"
 #include "Socket.hpp"
+#include "Pool.hpp"
 
 namespace pr {
 
@@ -16,11 +17,12 @@ class TCPServer {
 
 	std::thread * waitingThread; // le thread d'attente
 
-	std::vector<std::thread *> handlerThreads; // les threads de gestion de client
+	pr::Pool threadPool;
 
 	int killpipe; //pipe used to kill the server's accept thread
 public :
-	TCPServer(ConnectionHandler * handler): ss(nullptr),handler(handler),waitingThread(nullptr) {}
+	TCPServer(ConnectionHandler * handler): ss(nullptr),handler(handler),waitingThread(nullptr),
+	threadPool(10) {}
 	// Tente de creer une socket d'attente sur le port donné
 	bool startServer (int port);
 
