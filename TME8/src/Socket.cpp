@@ -33,6 +33,7 @@ namespace pr {
         }
 
         //get host
+        //could be done with getaddrinfo ; might be better?
         struct hostent *hostinfo = gethostbyname(host.c_str());
         if(hostinfo == NULL){
             perror("gethostbyname");

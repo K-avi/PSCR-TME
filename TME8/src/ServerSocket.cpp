@@ -5,20 +5,24 @@
 
 namespace pr {
     ServerSocket::ServerSocket(int port){
-        socketfd = socket(AF_INET, SOCK_STREAM, 0);
+        int fd = socket(AF_INET, SOCK_STREAM, 0);
         if(socketfd < 0){
             perror("socket");
             return;
         }
 
+        //declare the port and adress and so on
         struct sockaddr_in sin;
         memset((char*)&sin, 0, sizeof(sin));
 
         sin.sin_family = AF_INET;
         sin.sin_port = htons(port);
-        sin.sin_addr.s_addr = INADDR_ANY;
+        sin.sin_addr.s_addr = INADDR_ANY; //accept any adress on the machine
 
-        if(bind(socketfd, (struct sockaddr*)&sin, sizeof(sin)) < 0){
+        //try to bind
+        if(bind(fd, (struct sockaddr*)&sin, sizeof(sin)) < 0){
+            //close the socket if it fails
+            ::close(fd); 
             perror("bind");
             return;
         }
@@ -27,17 +31,21 @@ namespace pr {
             perror("listen");
             return;
         }
-        
+
+        socketfd = fd ;
     }
 
     Socket ServerSocket::accept(){
         struct sockaddr_in sin;
         socklen_t len = sizeof(sin);
+
+        //accept the connection on the socket
         int scom = ::accept(socketfd, (struct sockaddr*)&sin, &len);
-        if(scom < 0){
+        if(scom < 0){ //check for errors
             perror("accept");
-            return Socket();
+            return Socket(); //return an empty socket ; maybe wrong
         }
+        //return the socket
         return Socket(scom);
     }
 
