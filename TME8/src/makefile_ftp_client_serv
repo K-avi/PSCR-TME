@@ -1,0 +1,3 @@
+
+all: 
+    gpp -o main_ftp_server TCPServer.hpp TCPServer.cpp ServerSocket.hpp ServerSocket.cpp Socket.hpp Socket.cpp main_ftp_server.cpp

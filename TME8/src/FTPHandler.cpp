@@ -1,6 +1,7 @@
 #include "FTPHandler.hpp"
 #include <cstdio>
 #include <sstream>
+#include <string>
 #include <unistd.h>
 #include <dirent.h>
 
@@ -48,6 +49,14 @@ void pr::FTPHandlerServer::handleConnection(Socket s) {
             //read the file name
             read(socketfd, buff, 255);
             cout << "Received file name : " << buff << endl;
+            //remove the \n
+            for(int i = 0; i < 255; i++){
+                if(buff[i] == '\n'){
+                    buff[i] = '\0';
+                    break;
+                }
+            }
+            
             string file_name = string(buff);
             
             //read the file size
@@ -73,10 +82,23 @@ void pr::FTPHandlerServer::handleConnection(Socket s) {
             //read the file name
             read(socketfd, buff, 255);
             cout << "Received file name : " << buff << endl;
-            string file_name = string(buff);
+            //remove the \n
+            for(int i = 0; i < 255; i++){
+                if(buff[i] == '\n'){
+                    buff[i] = '\0';
+                    break;
+                }
+            }
+            //build the file path
+            stringstream file_name ; 
+            file_name << dir_name << "/" << string(buff);
 
             //read the file content
-            FILE *file = fopen(file_name.c_str(), "r");
+            FILE *file = fopen( file_name.str().c_str(), "r");
+            if(file == NULL){
+                cout << "File not found" << file_name.str() << endl;
+                continue;
+            }
             //go to the end of the file to get the size
             fseek(file, 0, SEEK_END);
             int size = ftell(file);
@@ -109,6 +131,7 @@ void pr::FTPHandlerServer::handleConnection(Socket s) {
 
 void pr::FTPHandlerClient::handleConnection(Socket s){
     char buff[256];
+    memset(buff, 0, 256);
     int socketfd = s.getFD();
     
     cout << "client handler started" << endl;
@@ -134,9 +157,20 @@ void pr::FTPHandlerClient::handleConnection(Socket s){
             //read the file name
             cout << "Enter the file name : " ;
             fgets(buff, 255, stdin);
+            //remove the \n
+            for(int i = 0; i < 255; i++){
+                if(buff[i] == '\n'){
+                    buff[i] = '\0';
+                    break;
+                }
+            }
             write(socketfd, buff, 255);
             //read the file size
             FILE *file = fopen(buff, "r");
+            if(file == NULL){
+                cout << "File not found" << endl;
+                continue;
+            }
             fseek(file, 0, SEEK_END);
             int size = ftell(file);
             fseek(file, 0, SEEK_SET);
@@ -159,21 +193,39 @@ void pr::FTPHandlerClient::handleConnection(Socket s){
             fgets(buff, 255, stdin);
             write(socketfd, buff, 255);
             //read the file size
+
+            string fname = string(buff);
+            //remove the \n
+            for(int i = 0; i < 255; i++){
+                if(fname[i] == '\n'){
+                    fname[i] = '\0';
+                    break;
+                }
+            }
+
             read(socketfd, buff, 255);
             int size = atoi(buff);
             //read the file content
+
+            cout << "file size : " << size << endl;
             char *file_content = new char[size];
             read(socketfd, file_content, size);
 
             //write the file
-            FILE *file = fopen(buff, "w");
+            FILE *file = fopen(fname.c_str(), "w");
             fwrite(file_content, 1, size, file);
             fclose(file);
 
         }else if(!strncmp(buff, "QUIT", 4)){
             //write the command to the server
-            write(socketfd, buff, 255);
-            break;
+            memset(buff, 0, 255);
+            buff[0] = 'Q';
+            buff[1] = 'U';
+            buff[2] = 'I';
+            buff[3] = 'T';
+
+            write(socketfd, buff, 5);
+            exit(0);
         }else{
             cout << "usage : LIST | UPLOAD [file] | DOWNLOAD [file] | QUIT" << endl ;   
         }

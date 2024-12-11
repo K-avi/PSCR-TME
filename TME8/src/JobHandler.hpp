@@ -10,7 +10,9 @@ class JobHandler : public Job {
     pr::Socket s;
 
 public:
-    JobHandler(pr::ConnectionHandler* handler, pr::Socket s) : handler(handler), s(s) {}  
+    JobHandler(pr::ConnectionHandler* h, pr::Socket s) : s(s) {
+        handler = h->clone();
+    }  
     void run() override {
         handler->handleConnection(s);
         delete handler;
