@@ -30,11 +30,22 @@ int main(int argc, char** argv){
 
         //count the get requests (this implem is wacky and I'm not proud of it)
         int get_requests = 0;
+        short state = 3 ; // 0 = undetermined , 1 = set , 2 = get , 3 = init 
         for(auto c : s){
-            if(c == 'g' || c == 'G')get_requests++;
-        }
+            if(!state || state == 3){
+                if(c == 'g' || c == 'G'){
+                    get_requests++;
+                    state = 1 ; 
+                }else if( c == 's' || c == 'S') {
+                    state = 2 ; 
+                }   
+            }
+            if( c == ';'){
+                state = 0;
+            }
+        }//wrong cuz takes into account g's in the string 
 
-        cout << "Sending the string to the server" << endl;
+        cout << "Sending the string to the server number of get requests : " << get_requests << endl;
         //send the string to the server
         sock.send(s);
         

@@ -142,14 +142,16 @@ namespace pr {
 
     vector<string> Socket::recv(int nb_msg){
         vector<string> res;
+        socklen_t addr_size = sizeof(addr);
         for(int i = 0 ; i < nb_msg ; i++){
             char buffer[1024];
             int n;
-            if((n = recvfrom(fd, buffer, 1024, 0, (struct sockaddr*)&addr, (socklen_t*)sizeof(addr))) < 0){
+            if((n = recvfrom(fd, buffer, 1024, 0, (struct sockaddr*)&addr, &addr_size) < 0)){
                 perror("recvfrom");
+                cout << "error" ;
                 return res;
             }
-            buffer[n] = '\0';
+            buffer[n+1] = '\0';
             res.push_back(string(buffer));
         }
         return res;

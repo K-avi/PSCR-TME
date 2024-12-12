@@ -25,18 +25,23 @@ namespace pr {
     }
 
     void ServerUDP::process_command(sockaddr_in sin, string s){
-        if(s[0] == 's' || 'S'){
+        cout << "string given to process is " << s << " first char is " << s[0] << endl ; 
+        //remove '\n'
+        for(auto &c : s) if(c == '\n') c = '\0';
+
+        if(s[0] == 's' || s[0] == 'S'){
             //goto the first non space character
             int i = 1 ; 
             while(s[i] == ' ') i++;
-
+            cout << "current char is " << s[i] << endl ;
             string key = "";
-            while( (s[i] != ' ' || s[i] != '\0') && i < s.size()){
+            while( (s[i] != ' ' && s[i] != '\0') && (unsigned)i < s.size()){
                 key += s[i];
                 i++;
             }
+            cout << "key parsed is " << key << endl ;
             if(s[i] == '\0'){
-                cout << "Invalid command" << endl;
+                cout << "Invalid command set requires 2 arguments" << endl;
                 return;
             }
 
@@ -44,28 +49,33 @@ namespace pr {
             while(s[i] == ' ') i++;
 
             string value = "";
-            while( (s[i] != ' ' || s[i] != '\0') && i < s.size()){//we could allow ' ' characters in the value tbh 
+            while( (s[i] != ' ' && s[i] != '\0' && s[i] != '\n') && i < s.size()){//we could allow ' ' characters in the value tbh 
                 value += s[i];
                 i++;
             }
 
-            kv_map[key] = value;    
-        }else if(s[0] == 'g' || 'G'){
+            kv_map[key] = value; 
+            cout << "first command is: " << s[0] << endl;   
+        }else if(s[0] == 'g' ||  s[0] == 'G'){
 
             //goto the first non space character
             int i = 1 ; 
             while(s[i] == ' ') i++;
 
             string key = "";
-            while( (s[i] != ' ' || s[i] != '\0') && i < s.size()){
+            while( (s[i] != ' ' && s[i] != '\0' && s[i] != '\n') && i < s.size()){
                 key += s[i];
                 i++;
             }
 
-            if(kv_map.find(key) != kv_map.end()){
+            if( (kv_map.find(key) != kv_map.end()) ){
+                cout << "key found; value is " << kv_map[key] << endl;
+
                 string value = kv_map[key];
                 sendto(serversock.getFD(), value.c_str(), value.size(), 0, (struct sockaddr*)&sin, sizeof(sin));
+
             }else{//create empty key and send it 
+                cout << "key not found " << endl;
                 string value = "";
                 sendto(serversock.getFD(), value.c_str(), value.size(), 0, (struct sockaddr*)&sin, sizeof(sin));
             }
@@ -95,8 +105,9 @@ namespace pr {
             cout << "Received: " << buffer << endl;
 
             string commands = string(buffer);
+            cout << "commands : " << buffer;
             vector<string> commands_vector = s->commands_from_string(commands);
-
+            cout << "number of commands is " << commands_vector.size() << endl ;
             for(auto command : commands_vector){
                s->process_command(sin,command);
             }
