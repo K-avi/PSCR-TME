@@ -24,10 +24,12 @@ namespace pr {
         return commands;
     }
 
-    void ServerUDP::process_command(sockaddr_in sin, string s){
-        cout << "string given to process is " << s << " first char is " << s[0] << endl ; 
+    void ServerUDP::process_command(sockaddr_in sin, string str){
         //remove spaces from s 
-
+        int i = 0 ; 
+        while(str[i]==' ') i++; 
+        
+        string s = str.substr(i);
         
 
         if(s[0] == 's' || s[0] == 'S'){
