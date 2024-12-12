@@ -123,13 +123,14 @@ namespace pr {
     string Socket::recv(){
         socklen_t addr_size = sizeof(addr);
         char buffer[1024];
+        memset(buffer, 0, 1024);
         int n;
         if((n = recvfrom(fd, buffer, 1024, 0, (struct sockaddr*)&addr, &addr_size) < 0)){
             perror("recvfrom");
             cout << "error fd is : " << fd << endl;
             exit(1);
         }
-        buffer[n+1] = '\0';
+        //buffer[n+1] = '\0';
         return string(buffer);
     }
 

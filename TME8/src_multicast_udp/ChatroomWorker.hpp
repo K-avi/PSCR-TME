@@ -7,8 +7,8 @@ namespace pr {
         std::thread readThread;
         std::thread writeThread;
 
-        Socket socket_read;
-        Socket socket_write;
+        Socket socket;
+        Socket socket2;
         std::string username;
 
         public: 

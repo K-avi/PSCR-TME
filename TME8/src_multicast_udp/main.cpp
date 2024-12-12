@@ -26,7 +26,9 @@ int main(int argc, char**argv){
     worker.start();
 
     string message;
-    cin >> message;
+    while(true){
+       ;
+    }
 
     worker.stop();
     return 0;
