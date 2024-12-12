@@ -43,8 +43,7 @@ int main(int argc, char** argv){
             if( c == ';'){
                 state = 0;
             }
-        }//wrong cuz takes into account g's in the string 
-
+        }
         cout << "Sending the string to the server number of get requests : " << get_requests << endl;
         //send the string to the server
         sock.send(s);

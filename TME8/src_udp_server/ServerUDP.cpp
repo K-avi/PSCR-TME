@@ -26,8 +26,9 @@ namespace pr {
 
     void ServerUDP::process_command(sockaddr_in sin, string s){
         cout << "string given to process is " << s << " first char is " << s[0] << endl ; 
-        //remove '\n'
-        for(auto &c : s) if(c == '\n') c = '\0';
+        //remove spaces from s 
+
+        
 
         if(s[0] == 's' || s[0] == 'S'){
             //goto the first non space character
@@ -81,7 +82,7 @@ namespace pr {
             }
             
         }else{
-            cout << "Invalid command" << endl;
+            cout << "Invalid command " << s <<  endl;
         }
     }
 
@@ -105,10 +106,11 @@ namespace pr {
             cout << "Received: " << buffer << endl;
 
             string commands = string(buffer);
-            cout << "commands : " << buffer;
+          
             vector<string> commands_vector = s->commands_from_string(commands);
-            cout << "number of commands is " << commands_vector.size() << endl ;
             for(auto command : commands_vector){
+
+               cout << "processing : " << command << endl ; 
                s->process_command(sin,command);
             }
         }
