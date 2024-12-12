@@ -30,6 +30,8 @@ class ServerUDP{
     std::thread* server_thread;
     std::unordered_map<std::string, std::string> kv_map;
     std::atomic_bool running;
+    int killpipe; //pipe used to kill the server's accept thread
+
 
     /*
     creates a vector of commands from a string ; each command is separated by a ';' 

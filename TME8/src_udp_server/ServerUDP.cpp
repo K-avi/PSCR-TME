@@ -3,6 +3,9 @@
 #include <iostream>
 #include <pthread.h>
 #include <vector>
+#include <unistd.h>
+#include <sys/select.h> 
+
 
 using namespace std;
 
@@ -90,12 +93,36 @@ namespace pr {
 
     void ServerUDP::StartServer(){
         running = true;
-        server_thread = new std::thread([](ServerUDP* s){
+        int pipefd[2];
+        if(pipe(pipefd) < 0){
+            perror("pipe");
+            return ;
+        }
+
+        server_thread = new std::thread([](ServerUDP* s, int readpipe){
         while(s->running){
 
             //declare the socket address 
             //to handle termination I should 
             //put the select thingy from the TCP version
+
+        //rfds is the set that will be used to wait for events
+                        //(socket ready to read, termination of the server on pipe)
+            fd_set rfds; //set of file descriptors
+            FD_ZERO(&rfds); //clear the set
+            FD_SET(readpipe, &rfds); //add the pipe to the set
+            FD_SET(s->serversock.getFD(), &rfds); //add the server socket to the set
+
+            //select allows to wait on BOTH the socket and the pipe to terminate the server
+            select(std::max(readpipe, s->serversock.getFD()) + 1, &rfds, NULL, NULL, NULL); //wait for an event on one of the file descriptors
+            cout << "woke up from select" << endl;
+            //check for termination first 
+            if(FD_ISSET(readpipe, &rfds)){//FD_ISSET -> checks that the file descriptor is in the set
+                cout << "Server terminated" << endl;
+                return ;
+            }
+
+
             struct sockaddr_in sin;
             socklen_t sinlen = sizeof(sin);
             char buffer[1024];
@@ -116,10 +143,15 @@ namespace pr {
                s->process_command(sin,command);
             }
         }
-        }, this);
+        }, this,pipefd[0]);
+        killpipe = pipefd[1];//set killpipe to write end of the pipe
     }
 
     void ServerUDP::StopServer(){
+        int n = 1 ;
+        write(killpipe, &n, sizeof(n));
+        //wait for the thread to terminate
+
         running = false;
         server_thread->join();
         delete server_thread;
