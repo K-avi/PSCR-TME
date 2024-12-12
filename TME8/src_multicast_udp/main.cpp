@@ -12,7 +12,13 @@ int main(int argc, char**argv){
 
     string username, ip;
     int port;
-    if(argc < 3){
+
+    if(argc == 2){
+        username = argv[1];
+        ip = DEFAULT_MULTICAST_IP;
+        port = DEFAULT_PORT;
+        
+    }else if(argc < 3){
         username = DEFAULT_USERNAME;
         ip = DEFAULT_MULTICAST_IP;
         port = DEFAULT_PORT;
@@ -30,6 +36,6 @@ int main(int argc, char**argv){
        ;
     }
 
-    worker.stop();
+    //worker.stop();
     return 0;
 }
