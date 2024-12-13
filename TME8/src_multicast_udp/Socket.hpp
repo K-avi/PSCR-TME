@@ -14,6 +14,8 @@ class Socket {
 	struct sockaddr_in addr; //the send / recv methods will be supported 
 	//in the socket so store the address of the server here
 
+	int killpipe;
+
 public :
 	Socket():fd(-1){}
 	Socket(int fd):fd(fd){}
